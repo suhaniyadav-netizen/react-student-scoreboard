@@ -1,10 +1,10 @@
-function Header({ title }) {
+function Header() {
   return (
     <header className="app-header">
-      <h1>{title}</h1>
-      <p>Manage and track student performance dynamically</p>
+      <div className="version">— ACADEMIC SCOREBOARD BY SUHANI YADAV</div>
+      <h1>STUDENT <span className="glow-text">SCOREBOARD</span></h1>
+      <div className="divider"></div>
     </header>
   );
 }
-
 export default Header;

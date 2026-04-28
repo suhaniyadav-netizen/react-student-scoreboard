@@ -1,36 +1,85 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
+import StatsBar from './components/StatsBar';
 import AddStudentForm from './components/AddStudentForm';
 import StudentTable from './components/StudentTable';
 import './index.css';
 
 function App() {
   const [students, setStudents] = useState([
-    { id: 1, name: 'Alice Johnson', score: 85 },
-    { id: 2, name: 'Bob Smith', score: 35 }
+    { id: 1, name: 'Aman', score: 78 },
+    { id: 2, name: 'Riya', score: 45 }
   ]);
 
+  const [theme, setTheme] = useState('dark');
+  const [selectedIds, setSelectedIds] = useState([]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+
   const addStudent = (name, score) => {
-    const newStudent = {
-      id: Date.now(),
-      name: name,
-      score: Number(score)
-    };
-    setStudents([...students, newStudent]);
+    setStudents([...students, { id: Date.now(), name, score: Number(score) }]);
   };
 
   const updateScore = (id, newScore) => {
-    setStudents(students.map(student =>
-      student.id === id ? { ...student, score: Number(newScore) } : student
-    ));
+    setStudents(students.map(s => s.id === id ? { ...s, score: Number(newScore) } : s));
   };
 
+  const toggleSelection = (id) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(selectedId => selectedId !== id) : [...prev, id]
+    );
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.length === students.length && students.length > 0) {
+      setSelectedIds([]); 
+    } else {
+      setSelectedIds(students.map(s => s.id)); 
+    }
+  };
+
+  const total = students.length;
+  const passed = students.filter(s => s.score >= 40).length;
+  const avg = total > 0 ? Math.round(students.reduce((acc, curr) => acc + curr.score, 0) / total) : 0;
+
   return (
-    <div className="app-container">
-      <Header title="Academy Scoreboard" />
-      <div className="main-content">
+    <div className="app-wrapper">
+      <div className="theme-toggle-container">
+        <button className="minimal-toggle" onClick={toggleTheme}>
+          {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+        </button>
+      </div>
+
+      <Header />
+      
+      <div className="panel">
+        <div className="panel-title">
+          <span className="dot"></span> REGISTER STUDENT
+          <span className="right-text">NEW ENTRY</span>
+        </div>
         <AddStudentForm onAdd={addStudent} />
-        <StudentTable students={students} onUpdateScore={updateScore} />
+      </div>
+
+      <StatsBar total={total} passed={passed} avg={avg} />
+
+      <div className="panel">
+        <div className="panel-title">
+          <span className="dot" style={{opacity: 0}}></span> STUDENT RECORDS
+          <span className="right-text">
+            {selectedIds.length > 0 ? `${selectedIds.length} SELECTED` : `${total} ENTRIES`}
+          </span>
+        </div>
+        <StudentTable 
+          students={students} 
+          onUpdateScore={updateScore} 
+          selectedIds={selectedIds}
+          onToggleSelection={toggleSelection}
+          onToggleAll={toggleAll}
+        />
       </div>
     </div>
   );
