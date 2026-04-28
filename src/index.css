@@ -307,7 +307,6 @@ body {
   font-size: 0.8rem;
   transition: all 0.2s;
 }
-
 .btn-save:hover { 
   color: var(--text-main); 
   border-color: var(--text-main); 
