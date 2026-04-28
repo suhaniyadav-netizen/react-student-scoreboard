@@ -7,8 +7,8 @@ import './index.css';
 
 function App() {
   const [students, setStudents] = useState([
-    { id: 1, name: 'Aman', score: 78 },
-    { id: 2, name: 'Riya', score: 45 }
+    { id: 1, name: 'Suhani Yadav', score: 99 },
+    { id: 2, name: 'Prabhat Bhatia', score: 85 }
   ]);
 
   const [theme, setTheme] = useState('dark');
